@@ -57,3 +57,7 @@ def analyze_property(data: PropertyInput):
         "Overall ROI (%)": roi
     }
     return result
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to Real Estate ROI & Risk Analyzer API 🚀"}
