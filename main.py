@@ -68,4 +68,9 @@ def analyze_property(data: PropertyInput):
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+    
+@app.get("/form", response_class=HTMLResponse)
+async def show_form(request: Request):
+    return templates.TemplateResponse("form.html", {"request": request})
+
 
