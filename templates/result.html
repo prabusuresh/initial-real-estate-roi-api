@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Investment Analysis Result</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #2c3e50; }
+        p { font-size: 18px; }
+        strong { color: #34495e; }
+    </style>
+</head>
+<body>
+    <h1>🏡 Investment Analysis Report</h1>
+    <p><strong>Location:</strong> {{ location }}</p>
+    <p><strong>Property Type:</strong> {{ property_type }}</p>
+    <p><strong>Purchase Price:</strong> ₹{{ property_price }}</p>
+    <p><strong>Expected Monthly Rent:</strong> ₹{{ expected_rent }}</p>
+    <p><strong>Holding Period:</strong> {{ holding_years }} years</p>
+    <p><strong>Loan Amount:</strong> ₹{{ loan_amount }}</p>
+    <p><strong>Total Rental Income:</strong> ₹{{ total_rent_income }}</p>
+    <p><strong>Estimated Final Property Value:</strong> ₹{{ final_property_value }}</p>
+    <p><strong>Overall Estimated ROI:</strong> {{ roi }}%</p>
+    <p><strong>Risk Level:</strong> {{ risk_score }}</p>
+    <p><strong>Risk Reason:</strong> {{ reason }}</p>
+</body>
+</html>
