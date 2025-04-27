@@ -1,5 +1,12 @@
 # main.py
 
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+from fastapi import Request
+
+templates = Jinja2Templates(directory="templates")
+
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 import numpy as np
@@ -58,6 +65,7 @@ def analyze_property(data: PropertyInput):
     }
     return result
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to Real Estate ROI & Risk Analyzer API 🚀"}
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
