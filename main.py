@@ -9,27 +9,31 @@ import numpy as np
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-# Mock function to simulate market data fetching
+# Format number into Indian Rupees
+def format_inr(amount):
+    return f"₹{amount:,.2f}"
+
+# Simulated market data
 def fetch_market_data(location):
     print(f"Fetching market data for {location}... (mocked)")
-    average_price_growth_rate = np.random.uniform(0.04, 0.07)  # 4%-7% appreciation
-    average_rental_yield = 0.035  # 3.5% rental yield
+    average_price_growth_rate = np.random.uniform(0.04, 0.07)
+    average_rental_yield = 0.035
     return average_price_growth_rate, average_rental_yield
 
-# Mock function to simulate risk analysis
+# Simulated risk analysis
 def analyze_risk(location, property_type):
     risk_score = np.random.choice(["Low", "Medium", "High"])
     reason = "Based on general location saturation and demand trends (mocked)"
     return risk_score, reason
 
-# ROI calculator
+# ROI calculation
 def calculate_roi(property_price, expected_rent, holding_years, appreciation_rate=0.06):
     total_rent_income = expected_rent * 12 * holding_years
     final_property_value = property_price * ((1 + appreciation_rate) ** holding_years)
     roi = (total_rent_income + (final_property_value - property_price)) / property_price * 100
     return roi, total_rent_income, final_property_value
 
-# Simulated rental estimate
+# Fallback rent
 def get_rental_estimate(location):
     location = location.lower()
     location_rent_mapping = {
@@ -43,24 +47,23 @@ def get_rental_estimate(location):
     }
     return location_rent_mapping.get(location)
 
-# Define your data model
+# Pydantic model for API users
 class PropertyInput(BaseModel):
     location: str
     property_type: str
     property_price: float
     holding_years: int
     loan_amount: float
-    expected_rent: float = None  # Optional
+    expected_rent: float = None
 
-# API Endpoint for API users
+# API Endpoint
 @app.post("/analyze")
 def analyze_property(data: PropertyInput):
     rent = data.expected_rent or get_rental_estimate(data.location) or 15000
     roi, total_rent_income, final_property_value = calculate_roi(
         data.property_price, rent, data.holding_years
     )
-
-    result = {
+    return {
         "Location": data.location,
         "Property Type": data.property_type,
         "Purchase Price": data.property_price,
@@ -71,7 +74,6 @@ def analyze_property(data: PropertyInput):
         "Estimated Final Property Value": final_property_value,
         "Overall ROI (%)": roi
     }
-    return result
 
 # Web Routes
 @app.get("/", response_class=HTMLResponse)
@@ -90,7 +92,7 @@ async def analyze_form(request: Request,
                        expected_rent: float = Form(...),
                        holding_years: int = Form(...),
                        loan_amount: float = Form(...)):
-    
+
     appreciation_rate, rental_yield = fetch_market_data(location)
     roi, total_rent_income, final_property_value = calculate_roi(
         property_price, expected_rent, holding_years, appreciation_rate
@@ -101,13 +103,13 @@ async def analyze_form(request: Request,
         "request": request,
         "location": location,
         "property_type": property_type,
-        "property_price": property_price,
-        "expected_rent": expected_rent,
+        "purchase_price": format_inr(property_price),
+        "expected_rent": format_inr(expected_rent),
         "holding_years": holding_years,
-        "loan_amount": loan_amount,
-        "total_rent_income": total_rent_income,
-        "final_property_value": final_property_value,
-        "roi": roi,
+        "loan_amount": format_inr(loan_amount),
+        "total_rent_income": format_inr(total_rent_income),
+        "final_property_value": format_inr(final_property_value),
+        "roi": f"{roi:.2f}%",
         "risk_score": risk_score,
         "reason": reason
     })

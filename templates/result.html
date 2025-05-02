@@ -4,17 +4,38 @@
     <meta charset="UTF-8">
     <title>Investment Analysis Result</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        h1 { color: #2c3e50; }
-        p { font-size: 18px; }
-        strong { color: #34495e; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        p {
+            font-size: 18px;
+        }
+        strong {
+            color: #34495e;
+        }
+        .download-btn {
+            margin-top: 30px;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+
+<div id="report">
     <h1>🏡 Investment Analysis Report</h1>
     <p><strong>Location:</strong> {{ location }}</p>
     <p><strong>Property Type:</strong> {{ property_type }}</p>
-    <p><strong>Purchase Price:</strong> ₹{{ property_price }}</p>
+    <p><strong>Purchase Price:</strong> ₹{{ purchase_price }}</p>
     <p><strong>Expected Monthly Rent:</strong> ₹{{ expected_rent }}</p>
     <p><strong>Holding Period:</strong> {{ holding_years }} years</p>
     <p><strong>Loan Amount:</strong> ₹{{ loan_amount }}</p>
@@ -23,5 +44,25 @@
     <p><strong>Overall Estimated ROI:</strong> {{ roi }}%</p>
     <p><strong>Risk Level:</strong> {{ risk_score }}</p>
     <p><strong>Risk Reason:</strong> {{ reason }}</p>
+</div>
+
+<button class="download-btn" onclick="downloadPDF()">📥 Download PDF</button>
+
+<!-- Script for html2pdf -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    function downloadPDF() {
+        const element = document.getElementById("report");
+        const opt = {
+            margin: 0.5,
+            filename: 'RealEstate_ROI_Report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+</script>
+
 </body>
 </html>
